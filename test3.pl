@@ -33,13 +33,18 @@ sub open_file1()
 	open (FILE1, "< $file1") or die ("can't open file $file1: $!");
 	print ("\nopening $file1 ...\n");
 	while (<FILE1>) {
+		next if /^#/;		#skip comment line
 		#print;
 		my ($k, $v) = split; 	#note: key value line
 		$k =~ s/\[/\\\[/;	#handle square bracket [
 		$k =~ s/\]/\\\]/;	#handle square bracket  ]
 		if (not defined $kv_h{$k}) {
 			$kv_h{$k} = $v;
-		} else {
+			if ($v =~/^$/) {
+				print "error: line $., key=$k, value=empty string"
+			}
+		} 
+		else {
 			print "error: line $., key/value exist:  $k => $kv_h{$k}, skipping this"
 		}
 	}
@@ -57,7 +62,7 @@ sub open_file2()
 		#print "Before: LINE $. : $_";
 		foreach my $key (keys(%kv_h)) {
 			#print "$key => $kv_h{$key}\n";
-			if (/$key/) {				
+			if (/\b$key\b/) {		#note: \b=boundary		
 				s/$key/$kv_h{$key}/g;	#make substitution, global sub. on single line
 			}
 		}
