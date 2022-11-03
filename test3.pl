@@ -11,6 +11,10 @@ my %kv_h;
 my $kvfile;
 my $datafile;
 
+#
+# get keyvalue file name
+# get datafile name
+#
 sub read_input_args()
 {
 	($kvfile, $datafile) = @ARGV;
@@ -54,7 +58,7 @@ sub open_file2()
 		foreach my $key (keys(%kv_h)) {
 			#print "$key => $kv_h{$key}\n";
 			if (/$key/) {				
-				s/$key/$kv_h{$key}/g;	#make substitution, global on single line
+				s/$key/$kv_h{$key}/g;	#make substitution, global sub. on single line
 			}
 		}
 		#print "After: LINE $. : $_";
