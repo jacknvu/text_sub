@@ -3,6 +3,7 @@
 # script reads 2 files:
 #  key/value file and datafile
 #  make key/value substitution in datafile and print line
+#  requirement: single space \s required after "key" in datafile
 
 use strict;
 
@@ -48,6 +49,9 @@ sub open_file1()
 			print "error: line $., key/value exist:  $k => $kv_h{$k}, skipping this"
 		}
 	}
+	foreach my $key (keys(%kv_h)) {
+		print "$key => $kv_h{$key}\n";
+	}
 }
 
 #
@@ -62,7 +66,7 @@ sub open_file2()
 		#print "Before: LINE $. : $_";
 		foreach my $key (keys(%kv_h)) {
 			#print "$key => $kv_h{$key}\n";
-			if (/\b$key\b/) {		#note: \b=boundary		
+			if (/$key\s/) {		#note: \b=boundary = SPACE because \b$key\b
 				s/$key/$kv_h{$key}/g;	#make substitution, global sub. on single line
 			}
 		}
