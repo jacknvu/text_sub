@@ -66,7 +66,7 @@ sub open_file2()
 		#print "Before: LINE $. : $_";
 		foreach my $key (keys(%kv_h)) {
 			#print "$key => $kv_h{$key}\n";
-			if (/$key\s/) {		#note: \b=boundary = SPACE because \b$key\b
+			if (/$key\s/) {		#note: \b=boundary = SPACE (because \b$key\b didn't work)
 				s/$key/$kv_h{$key}/g;	#make substitution, global sub. on single line
 			}
 		}
