@@ -1,9 +1,11 @@
 #!/usr/bin/perl
 
 # script reads 2 files:
-#  key/value file and datafile
+#  key/value file and datafile:
+#    <key> <value>
 #  make key/value substitution in datafile and print line
-#  requirement: single space \s required after "key" in datafile
+#  requirement: single space \s required after "key" in datafile:
+#     <key><space><text>
 
 use strict;
 
@@ -32,7 +34,7 @@ sub open_file1()
 {
 	my $file1=$kvfile;
 	open (FILE1, "< $file1") or die ("can't open file $file1: $!");
-	print ("\nopening $file1 ...\n");
+	print (STDERR "\nopening $file1 ...\n");
 	while (<FILE1>) {
 		next if /^#/;		#skip comment line
 		#print;
@@ -42,11 +44,11 @@ sub open_file1()
 		if (not defined $kv_h{$k}) {
 			$kv_h{$k} = $v;
 			if ($v =~/^$/) {
-				print "error: line $., key=$k, value=empty string"
+				print STDERR "\nerror: line $., key=$k, value=empty string"
 			}
 		} 
 		else {
-			print "error: line $., key/value exist:  $k => $kv_h{$k}, skipping this"
+			print STDERR "\nerror: line $., key/value exist:  $k => $kv_h{$k}, skipping this"
 		}
 	}
 	foreach my $key (keys(%kv_h)) {
@@ -61,7 +63,7 @@ sub open_file2()
 {
 	my $file2=$datafile;
 	open (FILE2, "< $file2") or die ("can't open $file2: $!");
-	print ("\nopening $file2 ...\n");
+	print (STDERR "\nopening $file2 ...\n");
 	while (<FILE2>) {
 		#print "Before: LINE $. : $_";
 		foreach my $key (keys(%kv_h)) {
