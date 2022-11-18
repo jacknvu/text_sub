@@ -5,7 +5,9 @@
 #    <key> <value>
 #  make key/value substitution in datafile and print line
 #  requirement: single space \s required after "key" in datafile:
-#     <key><space><text>
+#     <space><key><space><text>
+#
+#  option -nodirection: remove string direction (not global)
 
 use strict;
 
@@ -13,6 +15,7 @@ my %kv_h;
 
 my $kvfile;
 my $datafile;
+my $option;
 
 #
 # get keyvalue file name
@@ -22,8 +25,18 @@ sub read_input_args()
 {
 	($kvfile, $datafile) = @ARGV;
 	if (not defined $datafile) {
-		print "Usage:  keyvaluefile datafile\n";
+		print "Usage:  keyvaluefile datafile [-nodirection]\n";
 		exit (1);
+	}
+	if ($#ARGV == 2) {
+		$option = $ARGV[2];
+		if ($option =~ "-nodirection\$") {
+			$option = 1;	#true
+		} else {
+			print STDERR "\ninvalid option $option\n";
+			$option = 0;	#false
+			exit (-1);
+		}
 	}
 }
 
@@ -65,10 +78,13 @@ sub open_file2()
 	open (FILE2, "< $file2") or die ("can't open $file2: $!");
 	print (STDERR "\nopening $file2 ...\n");
 	while (<FILE2>) {
+		if ($option) {
+			s/direction//;			#remove string direction
+		}
 		#print "Before: LINE $. : $_";
 		foreach my $key (keys(%kv_h)) {
 			#print "$key => $kv_h{$key}\n";
-			if (/$key\s/) {		#note: \b=boundary = SPACE (because \b$key\b didn't work)
+			if (/\s$key\s/) {		#note: \b=boundary = SPACE (because \b$key\b didn't work)
 				s/$key/$kv_h{$key}/g;	#make substitution, global sub. on single line
 			}
 		}
